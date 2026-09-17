@@ -5,7 +5,17 @@
 #     salvo que se cumpla "save 3600 1 / 300 100 / 60 10000").
 #   - Trap de SIGTERM: apaga el MCP server y hace SHUTDOWN SAVE en FalkorDB.
 #     El original hace `exec uv run`, redis muere sin guardar al bajar.
+#   - Aplica FALKORDB_PASSWORD a redis (--requirepass). El original lo ignora.
 set -e
+
+# Password opcional: si FALKORDB_PASSWORD viene vacío, redis corre sin auth.
+REDIS_AUTH_ARGS=()
+CLI_AUTH_ARGS=()
+if [ -n "${FALKORDB_PASSWORD:-}" ]; then
+  REDIS_AUTH_ARGS=(--requirepass "$FALKORDB_PASSWORD")
+  CLI_AUTH_ARGS=(-a "$FALKORDB_PASSWORD" --no-auth-warning)
+fi
+rcli() { redis-cli -h localhost -p 6379 "${CLI_AUTH_ARGS[@]}" "$@"; }
 
 echo "Starting FalkorDB..."
 redis-server \
@@ -17,10 +27,11 @@ redis-server \
   --appendonly yes \
   --appendfsync everysec \
   --save "60 1" \
+  "${REDIS_AUTH_ARGS[@]}" \
   --daemonize yes
 
 echo "Waiting for FalkorDB to be ready..."
-until redis-cli -h localhost -p 6379 ping > /dev/null 2>&1; do sleep 1; done
+until rcli ping > /dev/null 2>&1; do sleep 1; done
 echo "FalkorDB is ready!"
 
 if [ "${BROWSER:-1}" = "1" ]; then
@@ -39,7 +50,7 @@ shutdown() {
   kill -TERM "$MCP_PID" 2>/dev/null || true
   wait "$MCP_PID" 2>/dev/null || true
   echo "Saving FalkorDB and shutting down..."
-  redis-cli -p 6379 SHUTDOWN SAVE || true
+  rcli SHUTDOWN SAVE || true
   exit 0
 }
 trap shutdown TERM INT

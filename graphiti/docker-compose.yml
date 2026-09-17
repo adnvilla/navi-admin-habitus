@@ -51,7 +51,7 @@ services:
       - ./start-services.sh:/start-services.sh:ro
     stop_grace_period: 30s
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli -p 6379 ping && curl -fs http://localhost:8000/health"]
+      test: ["CMD-SHELL", "redis-cli -p 6379 $${FALKORDB_PASSWORD:+-a $$FALKORDB_PASSWORD --no-auth-warning} ping | grep -q PONG && curl -fs http://localhost:8000/health"]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -3,7 +3,7 @@
 ### Before Starting Any Task
 
 - **Always search first:** Use the `search_nodes` tool to look for relevant preferences and procedures before beginning work.
-- **Search for facts too:** Use the `search_facts` tool to discover relationships and factual information that may be relevant to your task.
+- **Search for facts too:** Use the `search_memory_facts` tool to discover relationships and factual information that may be relevant to your task.
 - **Filter by entity type:** Specify `Preference`, `Procedure`, or `Requirement` in your node search to get targeted results.
 - **Review all matches:** Carefully examine any preferences, procedures, or facts that match your current task.
 

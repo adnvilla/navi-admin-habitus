@@ -45,7 +45,7 @@ make graphiti-cypher C='MATCH (n) RETURN count(n)'
 make graphiti-test                    # inserta episodio de prueba
 ```
 
-- UI visual: http://localhost:3000. Login: Manual Configuration, host `localhost`, port `6379`, usuario y password vacíos (sin auth salvo que pongas `FALKORDB_PASSWORD`). Requiere `ENCRYPTION_KEY` en `.env`. Grafo `main` (= `GRAPHITI_GROUP_ID`).
+- UI visual: http://localhost:3000. Login: Manual Configuration, host `localhost`, port `6379`, usuario vacío, password = `FALKORDB_PASSWORD` (vacío por defecto). Requiere `ENCRYPTION_KEY` en `.env`. Grafo `main` (= `GRAPHITI_GROUP_ID`).
 - `graphiti/mcp.sh` llama cualquier tool MCP por HTTP: `./graphiti/mcp.sh tools/list '{}'`.
 - Modelo: `Episodic` (lo que metes) → `Entity` (extraído) unidos por `RELATES_TO` (hechos, con `valid_at` / `invalid_at`).
 
